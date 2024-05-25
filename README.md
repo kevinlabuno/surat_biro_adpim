@@ -21,7 +21,7 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Cara cloning dan configurasi project ini.
 
-## CLoning Ke Folder dan configurasi 
+## Cloning Ke Folder dan configurasi 
 - Silahkan cloning repository ini dengan menngunakan terminal dan gunakan url HTTPS dari repository ini.
 - Buka terminal arahkan ke folder yang telah dicloning. "cd (Lokasi Folder)".
 - Setelah diarahkan ke folder, jalankan "Composer Install".
