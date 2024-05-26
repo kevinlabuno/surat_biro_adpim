@@ -65,7 +65,7 @@ class ProfileController extends Controller
         return redirect('profile\.{{$id}}')->with(['success' => 'Data Berhasil Diubah/Ditambah']);
     }
     public function indexttd(){
-      return view ('profile\ttdprofile');
+      return view ('profile.ttdprofile');
     }
 
      public function uploadttd(Request $request, $id){

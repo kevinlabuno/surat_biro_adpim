@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class suratkeluar extends Model
 {
-    use Moderatable;
+    use HasFactory, Moderatable;
     protected $table = 'suratkeluar';
     protected $fillable = ['jenis_surat','file','namasuratklr'
     ,'nosurat','pengirim','namapengirim','perihal','tertuju',
-    'tanggalklr','status','status','komen'];
+    'tanggalklr','status','status','komen','ttd'];
 }

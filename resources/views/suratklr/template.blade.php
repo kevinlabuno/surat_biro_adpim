@@ -75,6 +75,19 @@
             <label for="" class="form-label">Upload File surat disini</label>
             <input type="file" class="form-control" id="file" name="file">
             </div>
+            <div class="col-md-12">
+                  <label for="" class="form-label">Jenis Surat</label>
+                  <select name="jenis_surat" class="form-label">
+                    <option>SPPD (Surat Perintah Perjalanan Dinas)</option>
+                    <option>SPT (Surat Perintah Tugas)</option>
+                    <option>STL (Surat Perintah Luar)</option>
+                    <option>Surat Ijin</option>
+                    <option>Surat Pemberitahuan</option>
+                    <option>Surat Undangan</option>
+                    <option>Surat Cuti</option>
+                    <option>Surat Panggilan</option>
+                  </select>
+                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
           </form>
@@ -90,12 +103,14 @@
                 <thead>
                   <tr>
                     <th scope="col">Nama Surat</th>
+                    <th>Jenis Surat</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>@foreach ($data as $item)
                      <tr>
                     <td scope="row">{{$item->namasurat}}</td>
+                    <td>{{$item->jenis_surat}}</td>
                     <td><a href="{{url('templates/'.$item->file)}}" target="_blank" download>Download</a> </td>
                   </tr>       @endforeach
              

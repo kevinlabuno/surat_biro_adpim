@@ -17,6 +17,7 @@ class CreateSuratkeluarTable extends Migration
             $table->id();
             $table->string('file');
             $table->string('namasuratklr');
+            $table->string('jenis_surat')->nullable();
             $table->string('nosurat')->nullable();
             $table->string('pengirim');
             $table->string('namapengirim');

@@ -50,13 +50,14 @@ Route::post('ttdprofile/{id}',[ProfileController::class, 'uploadttd']);
 
 // -----------------Surat Keluar Route-------------------------
 Route::get('suratkeluar', [SuratkeluarController::class, 'index']);
-Route::get('surat/{id}',[SuratkeluarController::class, 'surat']);
+Route::get('surat/{id}', [SuratkeluarController::class, 'surat'])->name('lihatsurat');
 Route::get('template',[SuratkeluarController::class, 'template']);
 Route::post('template', [SuratkeluarController::class, 'prosestemplate']);
 Route::get('inputsuratklr', [SuratkeluarController::class, 'inputklr']);
 Route::post('inputsuratklr', [SuratkeluarController::class, 'prosesinputklr']);
 Route::get('validasi/{id}', [SuratkeluarController::class, 'validas']);
 Route::patch('validasi/{id}',[SuratkeluarController::class, 'upvalidas']);
+Route::get('ttd_surat/{id}', [SuratkeluarController::class, 'ttd_surat'])->name('ttd_surat');
 
 // -----------------Daftar Anggota Route-------------------------
 Route::get('daftaranggota', [DaftaranggotaController::class, 'index']);

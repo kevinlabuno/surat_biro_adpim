@@ -11,7 +11,10 @@ Use \Carbon\Carbon;
 use Illuminate\Support\Str;
 use Auth;
 use File;
+use setasign\Fpdi\Fpdi;
 use App\Models\User;
+use App\Models\suratkeluar;
+use Illuminate\Support\Facades\Storage;
 
 class SuratkeluarController extends Controller
 {
@@ -45,7 +48,7 @@ class SuratkeluarController extends Controller
 
     public function inputklr(){
          $tertuju = User::all();
-        return view ('suratklr\inputsuratklr',compact('tertuju'));
+        return view ('suratklr.inputsuratklr',compact('tertuju'));
     }
 
       public function prosesinputklr(Request $_request){
@@ -90,7 +93,7 @@ class SuratkeluarController extends Controller
 
     public function validas ($id){
         $post = DB::table('suratkeluar')->where('id', $id)->first();
-        return view ('suratklr\validasi',compact('post'));
+        return view ('suratklr.validasi',compact('post'));
     }
 
     public function upvalidas (Request $_request, $id){
@@ -121,7 +124,7 @@ class SuratkeluarController extends Controller
     public function surat($id){
 
         $lihat = DB::table('suratkeluar')->where('id', $id)->first();
-        return view ('suratklr\surat',compact('lihat'));
+        return view ('suratklr.surat',compact('lihat'));
     }
 
     public function template(){
@@ -132,13 +135,49 @@ class SuratkeluarController extends Controller
     public function prosestemplate(Request $_request){
   $date = Carbon::today()->toDateString();
       $dokumen = $_request->file('file');
+      $jenis = $_request->jenis_surat;
       $nama_file = $_request->file('file')->getClientOriginalName();
       $nama_dokumen = $nama_file.$date.'.'.$_request->file('file')->getClientOriginalExtension();
       $dokumen->move('templates/',$nama_dokumen);
            DB::table('template')->insert([
                'file' => $nama_dokumen,
+               'jenis_surat' => $jenis,
                'namasurat' =>  $nama_file,
            ]);
      return redirect ('template')->with('status','Data Berhasil Disimpan');
+    }
+
+    public function ttd_surat($id)
+    {   
+         $surat = Suratkeluar::findOrFail($id);
+    $user = Auth::user();
+
+    $filePath = public_path('uploads/' . $surat->file);
+    $ttdPath = public_path('image/ttd/' . $user->ttd);
+
+    $pdf = new FPDI();
+    $pageCount = $pdf->setSourceFile($filePath);
+
+    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+        $pdf->AddPage();
+        $tplIdx = $pdf->importPage($pageNo);
+        $pdf->useTemplate($tplIdx);
+
+        if ($pageNo == 1) {
+            $x = 150;
+            $y = 250;
+            $pdf->Image($ttdPath, $x, $y, 30, 30);
+        }
+    }
+    $newFileName = 'signed_' . $surat->file;
+    $newFilePath = public_path('uploads/' . $newFileName);
+    $pdf->Output($newFilePath, 'F');
+    if (file_exists($filePath)) {
+        unlink($filePath);
+    }
+    $surat->file = $newFileName;
+    $surat->save();
+
+        return redirect()->back()->with('success','Berkas Telah Ditanda Tangan');
     }
 }

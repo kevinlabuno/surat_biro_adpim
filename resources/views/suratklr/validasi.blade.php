@@ -82,6 +82,9 @@
           <section class="section">
       <div class="row">
       <div class="card">
+        @if (session('success'))
+            <div class="alert alert-primary">{{session('success')}}</div>
+        @endif
             <div class="card-body">
               <h5 class="card-title">Tanda Tangan Digital</h5>
                 <form  action="{{url('validasi/'. $post->id)}}" method="post" enctype="multipart/form-data">
@@ -90,15 +93,16 @@
                    
                 <div class="row mb-3">
            
-                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Upload Surat Yang Telah DiTanda Tangan</label>
-                      <div class="col-md-8 col-lg-9">
+                      {{-- <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Upload Surat Yang Telah DiTanda Tangan</label>
+                      <div class="col-md-8 col-lg-9"> --}}
                       {{-- <img class="image rounded-circle" src=" {{asset('/image/ttd/'.Auth::user()->ttd)}}" alt="profile_image" > --}}
-                       <input class="form-control" name="file" type="file" id="file">
-                      </div>
+                       {{-- <input class="form-control" name="file" type="file" id="file">
+                      </div> --}}
 
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Nomor Surat</label>
                       <div class="col-md-8 col-lg-9">
-                       <input class="form-control" type="text" name="nomor" id="formFile">
+                       <input class="form-control" type="text" name="nomor" id="formFile" value="{{ $post->nosurat }}" {{ $post->nosurat ? 'readonly' : '' }}>
+
                       </div>
 
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Status</label>
@@ -115,8 +119,9 @@
                       <div class="col-md-8 col-lg-9">
                       <textarea class="form-control" name="komen" placeholder="Tinggalkan komentar disini" id="floatingTextarea" style="height: 100px;"></textarea>
                       </div>
+                      <hr>
                        <div class="text-right">
-                     
+                       <a href="#" class="btn btn-warning" id="ttdSuratButton" data-url="{{url('ttd_surat/'.$post->id)}}">Tanda Tangan Surat?</a>
                         <button class="btn btn-primary">Simpan</button>
                         </div> 
                 </div> 
@@ -134,7 +139,24 @@
         </div>
       </div>
     </section>
-  </main><!-- End #main -->
+  </main>
+  
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalLabel">Konfirmasi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Yakin berkas ingin divalidasi?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="confirmButton">Ya, Validasi</button>
+      </div>
+    </div>
+  </div><!-- End #main -->
 
   <!-- ======= Footer ======= -->
  
@@ -162,6 +184,21 @@
         sig.signature('clear');
         $("#signature64").val('');
     });
+
+document.getElementById('ttdSuratButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    var url = this.getAttribute('data-url');
+    var confirmButton = document.getElementById('confirmButton');
+
+    // Set URL to confirm button's click event
+    confirmButton.onclick = function() {
+        window.location.href = url;
+    };
+
+    // Show the modal
+    var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    confirmationModal.show();
+});
 </script>
 </body>
 
