@@ -15,34 +15,69 @@ use App\Models\User;
 
 class SuratmasukController extends Controller
 {
-    public function index (){
+   public function index() {
+    $user = Auth::user()->username;
+    $date = Carbon::today()->toDateString();
 
-       if (Auth::user()->role == 'Anggota') {
-        $user = Auth::user()->username;
-         $suratmsk =DB::table('suratmasuk')->where('tertuju','like','%'.$user.'%')->orwhere('pengirim','like','%'.$user.'%')->get();
-                     $date = Carbon::today()->toDateString();
+    if (Auth::user()->role == 'Anggota') {
+        $suratmsk = DB::table('suratmasuk')
+                      ->where('tertuju', 'like', '%' . $user . '%')
+                      ->orWhere('pengirim', 'like', '%' . $user . '%')
+                      ->orderBy('tanggalmsk', 'desc')
+                      ->get();
 
-        $tsrtmsk = DB::table('suratmasuk')->where('tanggalmsk','LIKE','%'.$date.'%')->where('tertuju','like','%'.$user.'%')->get();
-        $tsrtklr = DB::table('suratkeluar')->where('tanggalklr','LIKE','%'.$date.'%')->where('tertuju','like','%'.$user.'%')->get();
+        $tsrtmsk = DB::table('suratmasuk')
+                     ->where('tanggalmsk', 'LIKE', '%' . $date . '%')
+                     ->where('tertuju', 'like', '%' . $user . '%')
+                     ->orderBy('tanggalmsk', 'desc')
+                     ->get();
 
-        $jmsm = DB::table('suratmasuk')->where('tanggalmsk','LIKE','%'.$date.'%')->where('tertuju','like','%'.$user.'%')->count('id');
-        $jmsk = DB::table('suratkeluar')->where('tanggalklr','LIKE','%'.$date.'%')->where('tertuju','like','%'.$user.'%')->count('id');
+        $tsrtklr = DB::table('suratkeluar')
+                     ->where('tanggalklr', 'LIKE', '%' . $date . '%')
+                     ->where('tertuju', 'like', '%' . $user . '%')
+                     ->orderBy('tanggalklr', 'desc')
+                     ->get();
+
+        $jmsm = DB::table('suratmasuk')
+                  ->where('tanggalmsk', 'LIKE', '%' . $date . '%')
+                  ->where('tertuju', 'like', '%' . $user . '%')
+                  ->count('id');
+
+        $jmsk = DB::table('suratkeluar')
+                  ->where('tanggalklr', 'LIKE', '%' . $date . '%')
+                  ->where('tertuju', 'like', '%' . $user . '%')
+                  ->count('id');
+
         $jm = $jmsm + $jmsk;
-       } else {
-        $user = Auth::user()->username;
-         $suratmsk =DB::table('suratmasuk')->get();
-                     $date = Carbon::today()->toDateString();
+    } else {
+        $suratmsk = DB::table('suratmasuk')
+                      ->orderBy('tanggalmsk', 'desc')
+                      ->get();
 
-        $tsrtmsk = DB::table('suratmasuk')->where('tanggalmsk','LIKE','%'.$date.'%')->get();
-        $tsrtklr = DB::table('suratkeluar')->where('tanggalklr','LIKE','%'.$date.'%')->get();
+        $tsrtmsk = DB::table('suratmasuk')
+                     ->where('tanggalmsk', 'LIKE', '%' . $date . '%')
+                     ->orderBy('tanggalmsk', 'desc')
+                     ->get();
 
-        $jmsm = DB::table('suratmasuk')->where('tanggalmsk','LIKE','%'.$date.'%')->count('id');
-        $jmsk = DB::table('suratkeluar')->where('tanggalklr','LIKE','%'.$date.'%')->count('id');
+        $tsrtklr = DB::table('suratkeluar')
+                     ->where('tanggalklr', 'LIKE', '%' . $date . '%')
+                     ->orderBy('tanggalklr', 'desc')
+                     ->get();
+
+        $jmsm = DB::table('suratmasuk')
+                  ->where('tanggalmsk', 'LIKE', '%' . $date . '%')
+                  ->count('id');
+
+        $jmsk = DB::table('suratkeluar')
+                  ->where('tanggalklr', 'LIKE', '%' . $date . '%')
+                  ->count('id');
+
         $jm = $jmsm + $jmsk;
-       }
-       
-        return view ('suratmasuk',compact('suratmsk','tsrtmsk','tsrtklr','jm'));
     }
+
+    return view('suratmasuk', compact('suratmsk', 'tsrtmsk', 'tsrtklr', 'jm'));
+}
+
 
     public function inputmsk(){
         $tertuju = User::all();
